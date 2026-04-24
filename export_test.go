@@ -58,7 +58,7 @@ func (e *Ratelimit) StoreZoneCount() int {
 func SetNowForTest(r *Ratelimit, now func() time.Time) { r.now = now }
 
 // SyncOnceForTest invokes the unexported syncOnce method.
-func SyncOnceForTest(r *Ratelimit, ctx context.Context) error { return r.syncOnce(ctx) }
+func SyncOnceForTest(ctx context.Context, r *Ratelimit) error { return r.syncOnce(ctx) }
 
 // InitForTest parses the rule options and wires up internal state without
 // starting the sweeper or sync goroutines. Use this in tests that want to

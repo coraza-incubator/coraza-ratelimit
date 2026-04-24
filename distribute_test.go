@@ -62,7 +62,7 @@ func TestSyncOnce_MergesRemoteCounts(t *testing.T) {
 	raw, _ := json.Marshal(seed)
 	require.NoError(t, store.SetEx(context.Background(), r.Distributed.UniqueKey, string(raw), 0))
 
-	require.NoError(t, ratelimit.SyncOnceForTest(r, context.Background()))
+	require.NoError(t, ratelimit.SyncOnceForTest(context.Background(), r))
 	assert.GreaterOrEqual(t, r.StoreTotal(), int64(3))
 }
 
@@ -86,7 +86,7 @@ func TestSyncOnce_IgnoresStaleTimestamps(t *testing.T) {
 	raw, _ := json.Marshal(seed)
 	require.NoError(t, store.SetEx(context.Background(), r.Distributed.UniqueKey, string(raw), 0))
 
-	require.NoError(t, ratelimit.SyncOnceForTest(r, context.Background()))
+	require.NoError(t, ratelimit.SyncOnceForTest(context.Background(), r))
 	// Only the fresh count should be merged.
 	assert.Equal(t, int64(2), r.StoreTotal())
 }
@@ -100,7 +100,7 @@ func TestSyncOnce_EmptyRemoteOK(t *testing.T) {
 	r := &ratelimit.Ratelimit{}
 	require.NoError(t, ratelimit.InitForTest(r, mockRule{ID_: 503}, "zone[]=fixed&events=10&window=5&distribute_interval=60"))
 	defer r.Close()
-	require.NoError(t, ratelimit.SyncOnceForTest(r, context.Background()))
+	require.NoError(t, ratelimit.SyncOnceForTest(context.Background(), r))
 }
 
 func TestSyncOnce_RejectsMalformedRemote(t *testing.T) {
@@ -113,7 +113,7 @@ func TestSyncOnce_RejectsMalformedRemote(t *testing.T) {
 	require.NoError(t, ratelimit.InitForTest(r, mockRule{ID_: 504}, "zone[]=fixed&events=10&window=5&distribute_interval=60"))
 	defer r.Close()
 	require.NoError(t, store.SetEx(context.Background(), r.Distributed.UniqueKey, "{not valid json", 0))
-	require.Error(t, ratelimit.SyncOnceForTest(r, context.Background()))
+	require.Error(t, ratelimit.SyncOnceForTest(context.Background(), r))
 }
 
 func TestSyncOnce_NoStoreErrors(t *testing.T) {
@@ -122,6 +122,6 @@ func TestSyncOnce_NoStoreErrors(t *testing.T) {
 	r := &ratelimit.Ratelimit{}
 	require.NoError(t, ratelimit.InitForTest(r, mockRule{ID_: 505}, "zone[]=fixed&events=10&window=5&distribute_interval=60"))
 	defer r.Close()
-	err := ratelimit.SyncOnceForTest(r, context.Background())
+	err := ratelimit.SyncOnceForTest(context.Background(), r)
 	require.ErrorIs(t, err, ratelimit.ErrNoStoreConfigured)
 }

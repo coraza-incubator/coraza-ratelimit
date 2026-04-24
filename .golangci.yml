@@ -13,6 +13,18 @@ linters:
     - unused
     - revive
     - misspell
+  settings:
+    revive:
+      rules:
+        # Interface implementations frequently need to name parameters they
+        # do not use. Demanding `_` everywhere hurts readability more than
+        # it helps.
+        - name: unused-parameter
+          disabled: true
+        # Test helpers use trailing-underscore field names (e.g. ID_) to
+        # avoid colliding with same-named methods required by interfaces.
+        - name: var-naming
+          disabled: true
   exclusions:
     rules:
       - path: _test\.go

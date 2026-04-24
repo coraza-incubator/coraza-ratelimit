@@ -81,10 +81,10 @@ func TestValidateDistributionKey(t *testing.T) {
 		{"abcdefgh12345678", false},
 		{"short1", true},
 		{"ThisKeyIsWayTooLongForTheValidator12345", true},
-		{"abcdefghijklmnop", true},            // no digit
-		{"1234567890123456", true},            // no letter
-		{"abcdefgh1234567!", true},            // non-alnum
-		{"Abcdefghij1234567890", false},       // mixed
+		{"abcdefghijklmnop", true},      // no digit
+		{"1234567890123456", true},      // no letter
+		{"abcdefgh1234567!", true},      // non-alnum
+		{"Abcdefghij1234567890", false}, // mixed
 	}
 	for _, tc := range cases {
 		err := validateDistributionKey(tc.key)

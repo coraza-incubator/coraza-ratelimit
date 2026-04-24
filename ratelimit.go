@@ -124,4 +124,3 @@ func (e *Ratelimit) Evaluate(r plugintypes.RuleMetadata, tx plugintypes.Transact
 func (e *Ratelimit) Type() plugintypes.ActionType {
 	return plugintypes.ActionTypeNondisruptive
 }
-
