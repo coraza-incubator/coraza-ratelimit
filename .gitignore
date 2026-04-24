@@ -1,0 +1,21 @@
+# Build artefacts
+*.test
+*.out
+*.prof
+cover.out
+coverage.html
+
+# Editor / OS cruft
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Local env
+.env
+.env.local
+
+# Claude Code working directories
+.claude/
