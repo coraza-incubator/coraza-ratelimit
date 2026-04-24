@@ -110,27 +110,6 @@ func (s *zoneStore) tryIncrement(name string, now, window, maxEvents int64, maxZ
 	return true
 }
 
-// sweep evicts buckets with timestamps ≤ threshold and drops zones that
-// become empty. Called from the background sweeper goroutine.
-func (s *zoneStore) sweep(threshold int64) {
-	for i := range s.shards {
-		sh := &s.shards[i]
-		sh.mu.Lock()
-		for name, z := range sh.zones {
-			for ts, v := range z.buckets {
-				if ts <= threshold {
-					z.running -= v
-					delete(z.buckets, ts)
-				}
-			}
-			if len(z.buckets) == 0 {
-				delete(sh.zones, name)
-			}
-		}
-		sh.mu.Unlock()
-	}
-}
-
 // snapshot returns a JSON-serialisable view of every zone/timestamp that
 // still has non-zero events. The returned map is a deep copy so callers may
 // mutate or encode it without holding any lock.

@@ -44,8 +44,3 @@ func (m *MockTx) Interrupt(i *types.Interruption) {
 }
 
 var _ plugintypes.TransactionState = (*MockTx)(nil)
-
-// internal alias
-type mockTx = MockTx
-
-func newMockTx(_ string) *mockTx { return NewMockTx() }
