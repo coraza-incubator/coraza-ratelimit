@@ -1,18 +1,24 @@
+version: "2"
+
 run:
   timeout: 3m
 
 linters:
+  default: none
   enable:
     - errcheck
     - govet
     - ineffassign
     - staticcheck
     - unused
-    - gofmt
     - revive
     - misspell
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck
 
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters: [errcheck]
+formatters:
+  enable:
+    - gofmt
