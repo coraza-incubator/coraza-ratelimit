@@ -1,15 +1,25 @@
 name: CI
 on:
   push:
-    branches: [main]
   pull_request:
 
 permissions:
   contents: read
 
+# Cancel in-progress runs for the same ref when a new push arrives.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Skip the duplicate pull_request run when a branch from this same repo
+    # opens a PR: push already covered it. Only let pull_request run when
+    # the PR is coming from a fork (where push events never fire for us).
+    if: >-
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       matrix:
         go: ["1.25", "1.26"]
@@ -27,6 +37,9 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -38,6 +51,9 @@ jobs:
 
   integration-redis:
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name != github.repository
     services:
       redis:
         image: redis:7-alpine
